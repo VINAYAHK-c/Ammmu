@@ -1,88 +1,78 @@
 body {
   margin: 0;
+  font-family: Arial;
+  background: url("bg.jpg") no-repeat center/cover;
   height: 100vh;
   overflow: hidden;
-  font-family: sans-serif;
   color: white;
-  background: url("6e0da0bf7aac1596741cc97b14b3504a.jpg") no-repeat center/cover;
-  animation: zoomBg 12s infinite alternate;
 }
 
-@keyframes zoomBg {
-  from {background-size: 100%;}
-  to {background-size: 115%;}
-}
-
-
-.cursor {
-  display: inline-block;
-  margin-left: 5px;
-  animation: blink 1s infinite;
-}
-
-@keyframes blink {
-  0%, 50%, 100% {opacity: 1;}
-  25%, 75% {opacity: 0;}
-}
-
+/* overlay */
 .overlay {
   position: fixed;
   width: 100%;
   height: 100%;
   background: rgba(0,0,0,0.6);
-  z-index: -1;
+  backdrop-filter: blur(6px);
 }
 
-/* SCREEN SYSTEM */
+/* screens */
 .screen {
   position: absolute;
   width: 100%;
   height: 100vh;
-  opacity: 0;
-  transform: scale(1.1);
-  transition: all 0.8s ease;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  transition: 0.5s;
 }
 
 .screen.active {
-  opacity: 1;
-  transform: scale(1);
+  display: flex;
 }
 
-.screen.exit {
-  opacity: 0;
-  transform: scale(1.05);
+/* glow */
+.glow {
+  text-shadow: 0 0 10px pink, 0 0 30px red;
 }
 
-.overlay {
-  backdrop-filter: blur(8px);
-  background: rgba(0,0,0,0.65);
+/* gallery */
+.gallery img {
+  width: 150px;
+  margin: 10px;
+  border-radius: 10px;
 }
 
-h1 {
-  letter-spacing: 1px;
-  text-shadow: 0 0 20px pink, 0 0 40px red;
-}
-/* HEARTBEAT */
-.heartbeat {
-  font-size: 80px;
-  animation: beat 1s infinite;
-}
-
-@keyframes beat {
-  0% {transform: scale(1);}
-  50% {transform: scale(1.3);}
-  100% {transform: scale(1);}
-}
-
-/* BUTTONS */
+/* buttons */
 button {
   padding: 12px 25px;
-  border-radius: 25px;
+  border-radius: 30px;
   border: none;
   cursor: pointer;
   margin-top: 20px;
 }
 
+/* next button */
+.nextBtn {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(45deg,#ff4d6d,#ff99c8);
+  color: white;
+  font-size: 18px;
+  box-shadow: 0 0 15px #ff4d6d;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%{transform:translateX(-50%) scale(1);}
+  50%{transform:translateX(-50%) scale(1.1);}
+  100%{transform:translateX(-50%) scale(1);}
+}
+
+/* yes no */
 .yes {
   background: hotpink;
   color: white;
@@ -94,49 +84,22 @@ button {
   position: relative;
 }
 
-/* NEXT BUTTON */
-#nextBtn {
-  background: linear-gradient(45deg, #ff4d6d, #ff99c8);
-  color: white;
-  animation: pulse 1.5s infinite;
+/* hearts */
+.heart {
+  position: absolute;
+  color: pink;
+  animation: float 6s linear infinite;
 }
 
-@keyframes pulse {
-  50% {transform: scale(1.1);}
+@keyframes float {
+  0%{transform:translateY(100vh);}
+  100%{transform:translateY(-10vh);}
 }
 
-/* PROGRESS */
-#progressBar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 4px;
-  width: 0%;
-  background: pink;
-  z-index: 999;
-  transition: width 3s linear;
-}
-
-/* GALLERY */
-.gallery img {
-  width: 150px;
-  margin: 10px;
-  border-radius: 10px;
-}
-
-/* CONFETTI */
+/* confetti */
 #confetti {
   position: fixed;
   width: 100%;
   height: 100%;
   pointer-events: none;
-}
-
-#screen6 {
-  animation: zoomIn 5s ease forwards;
-}
-
-@keyframes zoomIn {
-  from {transform: scale(1);}
-  to {transform: scale(1.2);}
 }

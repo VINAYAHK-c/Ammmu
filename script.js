@@ -1,130 +1,79 @@
 let current = 1;
-let typingDone = false;
-let canGoNext = true;
-const params = new URLSearchParams(window.location.search);
-let herName = params.get("name") || "Ammu ❤️";
+let musicStarted = false;
 
 /* START */
 function startExperience() {
-  const music = document.getElementById("music");
-
-  music.currentTime = 0;
-  music.volume = 1;
-
-  music.play()
-    .then(() => {
-      console.log("music started");
-    })
-    .catch(err => {
-      console.log("play blocked", err);
-    });
-
-  current = 2;
   showScreen(2);
+  current = 2;
+
+  if (!musicStarted) {
+    document.getElementById("music").play().catch(()=>{});
+    musicStarted = true;
+  }
+
+  typeSequence();
 }
 
-/* TAP CONTROL */
-document.body.addEventListener("click", startExperience, { once: true });
-
-/* BUTTON NEXT */
+/* NEXT */
 function goNext(e) {
-  if (e) e.stopPropagation();
-  if (!typingDone && current === 2) return;
-
-  if (current < 9) {
-    current++;
-    showScreen(current);
-  }
+  e.stopPropagation();
+  current++;
+  showScreen(current);
 }
 
-/* SCREEN SWITCH */
+/* SHOW SCREEN */
 function showScreen(num) {
-  const currentScreen = document.querySelector(".screen.active");
-  const nextScreen = document.getElementById("screen"+num);
-
-  currentScreen.classList.add("exit");
-
-  setTimeout(()=>{
-    currentScreen.classList.remove("active","exit");
-    nextScreen.classList.add("active");
-  },400);
-
-  /* progress bar */
-  const bar = document.getElementById("progressBar");
-  bar.style.width = "0%";
-  setTimeout(()=> bar.style.width="100%",50);
-
-  /* typing */
-  if(num===2){
-    msgIndex = 0;
-    typingDone = false;
-    document.getElementById("nextBtn").style.display = "none";
-    typeSequence();
-  }
-
-  /* memory burst */
-  if(num===7){
-    memoryBurst();
-  }
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById("screen"+num).classList.add("active");
 }
 
 /* TYPING */
 const messages = [
-  `${herName}… the day I met you…`,
-  "I didn’t know my life was about to change ❤️",
-  "slowly… you became my happiness 💫",
-  "and now… you are my everything ❤️"
+  "The day I met you… ❤️",
+  "everything changed… 💫",
+  "you became my happiness 💖",
+  "you are my everything ❤️"
 ];
 
 let msgIndex = 0;
 
 function typeSequence() {
-  typingDone = false;
-
-  if (msgIndex >= messages.length) {
-    typingDone = true;
-    document.getElementById("nextBtn").style.display = "block";
-    return;
-  }
+  if (msgIndex >= messages.length) return;
 
   let text = messages[msgIndex];
   let i = 0;
-  const typingEl = document.getElementById("typing");
-  typingEl.innerHTML = "";
+  let el = document.getElementById("typing");
+  el.innerHTML = "";
 
   function type() {
     if (i < text.length) {
-      typingEl.innerHTML += text[i];
+      el.innerHTML += text[i];
       i++;
-
-      // 🔥 smoother + slightly faster
-      setTimeout(type, 25);
-
+      setTimeout(type, 40);
     } else {
       msgIndex++;
-
-      // ⏱️ better pause before next line
       setTimeout(typeSequence, 1000);
     }
   }
 
   type();
 }
+
 /* SECRET */
 function unlockSecret(e){
-  if (e) e.stopPropagation();
+  e.stopPropagation();
   document.getElementById("secretText").innerText =
-  "No matter what happens, I will always choose you ❤️";
+    "No matter what happens, I will always choose you ❤️";
 }
 
-/* PROPOSAL */
+/* YES */
 function yesClicked(e){
-  if (e) e.stopPropagation();
-  showScreen(9);
+  e.stopPropagation();
+  showScreen(6);
   startConfetti();
 }
 
-/* NO BUTTON */
+/* NO ESCAPE */
 function moveNo(){
   const btn = document.querySelector(".no");
   btn.style.position = "absolute";
@@ -132,20 +81,15 @@ function moveNo(){
   btn.style.left = Math.random()*80+"%";
 }
 
-/* BURST */
-function memoryBurst(){
-  for(let i=0;i<30;i++){
-    const el=document.createElement("div");
-    el.innerText="💖";
-    el.style.position="absolute";
-    el.style.left=Math.random()*100+"vw";
-    el.style.top=Math.random()*100+"vh";
-    el.style.fontSize="20px";
-    el.style.animation="explode 2s forwards";
-    document.body.appendChild(el);
-    setTimeout(()=>el.remove(),2000);
-  }
-}
+/* HEARTS */
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerText="❤";
+  h.style.left=Math.random()*100+"vw";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+},300);
 
 /* CONFETTI */
 function startConfetti(){
@@ -173,21 +117,6 @@ function startConfetti(){
     });
     requestAnimationFrame(draw);
   }
+
   draw();
 }
-
-document.getElementById("nameText").innerText = herName;
-
-if(num === X){
-  setTimeout(()=> showScreen(5), 1000);
-}
-
-function memoryText() {
-  const texts = ["our first chat 💬", "your smile 😊", "our moments 💕"];
-  const el = document.createElement("div");
-  el.innerText = texts[Math.floor(Math.random()*texts.length)];
-  el.className = "memory";
-  document.body.appendChild(el);
-  setTimeout(()=>el.remove(),4000);
-}
-setInterval(memoryText,2000);
