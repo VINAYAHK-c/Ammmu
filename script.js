@@ -1,92 +1,130 @@
 let current = 1;
 let typingDone = false;
-let musicStarted = false;
+let canGoNext = true;
+const params = new URLSearchParams(window.location.search);
+let herName = params.get("name") || "Ammu ❤️";
 
 /* START */
-function startExperience(){
+function startExperience() {
   const music = document.getElementById("music");
-  music.play().catch(()=>{});
-  musicStarted = true;
 
-  showScreen(2);
+  music.currentTime = 0;
+  music.volume = 1;
+
+  music.play()
+    .then(() => {
+      console.log("music started");
+    })
+    .catch(err => {
+      console.log("play blocked", err);
+    });
+
   current = 2;
+  showScreen(2);
 }
 
-/* NAVIGATION */
-function goNext(){
-  if(current === 2 && !typingDone) return;
+/* TAP CONTROL */
+document.body.addEventListener("click", startExperience, { once: true });
 
-  current++;
-  showScreen(current);
+/* BUTTON NEXT */
+function goNext(e) {
+  if (e) e.stopPropagation();
+  if (!typingDone && current === 2) return;
+
+  if (current < 9) {
+    current++;
+    showScreen(current);
+  }
 }
 
-/* SHOW SCREEN */
-function showScreen(num){
-  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-  document.getElementById("screen"+num).classList.add("active");
+/* SCREEN SWITCH */
+function showScreen(num) {
+  const currentScreen = document.querySelector(".screen.active");
+  const nextScreen = document.getElementById("screen"+num);
 
-  if(num === 2){
+  currentScreen.classList.add("exit");
+
+  setTimeout(()=>{
+    currentScreen.classList.remove("active","exit");
+    nextScreen.classList.add("active");
+  },400);
+
+  /* progress bar */
+  const bar = document.getElementById("progressBar");
+  bar.style.width = "0%";
+  setTimeout(()=> bar.style.width="100%",50);
+
+  /* typing */
+  if(num===2){
+    msgIndex = 0;
+    typingDone = false;
+    document.getElementById("nextBtn").style.display = "none";
     typeSequence();
   }
 
-  // shock jump
-  if(num === 5){
-    setTimeout(()=> {
-      current = 6;
-      showScreen(6);
-    },1000);
+  /* memory burst */
+  if(num===7){
+    memoryBurst();
   }
 }
 
 /* TYPING */
 const messages = [
-  "Ammu… the day I met you…",
-  "my life started changing ❤️",
-  "you became my happiness 💫",
-  "you became my everything ❤️"
+  `${herName}… the day I met you…`,
+  "I didn’t know my life was about to change ❤️",
+  "slowly… you became my happiness 💫",
+  "and now… you are my everything ❤️"
 ];
 
 let msgIndex = 0;
 
-function typeSequence(){
-  if(msgIndex >= messages.length){
+function typeSequence() {
+  typingDone = false;
+
+  if (msgIndex >= messages.length) {
     typingDone = true;
+    document.getElementById("nextBtn").style.display = "block";
     return;
   }
 
   let text = messages[msgIndex];
   let i = 0;
-  let el = document.getElementById("typing");
-  el.innerHTML = "";
+  const typingEl = document.getElementById("typing");
+  typingEl.innerHTML = "";
 
-  function type(){
-    if(i < text.length){
-      el.innerHTML += text[i];
+  function type() {
+    if (i < text.length) {
+      typingEl.innerHTML += text[i];
       i++;
-      setTimeout(type, 35);
+
+      // 🔥 smoother + slightly faster
+      setTimeout(type, 25);
+
     } else {
       msgIndex++;
-      setTimeout(typeSequence, 1200);
+
+      // ⏱️ better pause before next line
+      setTimeout(typeSequence, 1000);
     }
   }
 
   type();
 }
-
 /* SECRET */
-function unlockSecret(){
+function unlockSecret(e){
+  if (e) e.stopPropagation();
   document.getElementById("secretText").innerText =
   "No matter what happens, I will always choose you ❤️";
 }
 
-/* YES */
-function yesClicked(){
-  current = 7;
-  showScreen(7);
+/* PROPOSAL */
+function yesClicked(e){
+  if (e) e.stopPropagation();
+  showScreen(9);
   startConfetti();
 }
 
-/* NO ESCAPE */
+/* NO BUTTON */
 function moveNo(){
   const btn = document.querySelector(".no");
   btn.style.position = "absolute";
@@ -94,16 +132,30 @@ function moveNo(){
   btn.style.left = Math.random()*80+"%";
 }
 
+/* BURST */
+function memoryBurst(){
+  for(let i=0;i<30;i++){
+    const el=document.createElement("div");
+    el.innerText="💖";
+    el.style.position="absolute";
+    el.style.left=Math.random()*100+"vw";
+    el.style.top=Math.random()*100+"vh";
+    el.style.fontSize="20px";
+    el.style.animation="explode 2s forwards";
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),2000);
+  }
+}
+
 /* CONFETTI */
 function startConfetti(){
-  const canvas = document.getElementById("confetti");
-  const ctx = canvas.getContext("2d");
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
+  const canvas=document.getElementById("confetti");
+  const ctx=canvas.getContext("2d");
+  canvas.width=innerWidth;
+  canvas.height=innerHeight;
 
-  let pieces = [];
-
-  for(let i=0;i<120;i++){
+  let pieces=[];
+  for(let i=0;i<100;i++){
     pieces.push({
       x:Math.random()*canvas.width,
       y:Math.random()*canvas.height,
@@ -113,16 +165,29 @@ function startConfetti(){
 
   function draw(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
-
     pieces.forEach(p=>{
-      ctx.fillStyle=["#ff4d6d","#ff99c8","#ffc2d1"][Math.floor(Math.random()*3)];
+      ctx.fillStyle="pink";
       ctx.fillRect(p.x,p.y,5,5);
       p.y+=p.dy;
-      if(p.y>canvas.height) p.y=0;
+      if(p.y>canvas.height)p.y=0;
     });
-
     requestAnimationFrame(draw);
   }
-
   draw();
 }
+
+document.getElementById("nameText").innerText = herName;
+
+if(num === X){
+  setTimeout(()=> showScreen(5), 1000);
+}
+
+function memoryText() {
+  const texts = ["our first chat 💬", "your smile 😊", "our moments 💕"];
+  const el = document.createElement("div");
+  el.innerText = texts[Math.floor(Math.random()*texts.length)];
+  el.className = "memory";
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),4000);
+}
+setInterval(memoryText,2000);

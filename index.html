@@ -4,61 +4,88 @@
   <title>For You ❤️</title>
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <div class="overlay"></div>
+<div id="progressBar"></div>
 <canvas id="confetti"></canvas>
-
-<!-- MUSIC -->
-<audio id="music" src="vidssave.com Ennamo yedho song lyrics 48KBPS.mp3"></audio>
 
 <!-- SCREEN 1 -->
 <div class="screen active" id="screen1">
-  <h1 class="title">Hey Ammuu ❤️</h1>
-  <button onclick="startExperience()">Start 💫</button>
+  <h1 class="glow">Hey Ammu ❤️</h1>
+  <p class="next-hint">tap to begin 💫</p>
+  <button onclick="startExperience()">Start ❤️</button>
 </div>
 
 <!-- SCREEN 2 -->
 <div class="screen" id="screen2">
-  <h1 id="typing"></h1>
-  <button onclick="goNext()">Next →</button>
+ <h1>
+  <span id="typing"></span><span class="cursor">|</span>
+</h1>
+  <button id="nextBtn" onclick="goNext(event)" style="display:none;">
+    Continue ❤️ →
+  </button>
 </div>
 
 <!-- SCREEN 3 -->
 <div class="screen" id="screen3">
   <h2>Our Memories 💕</h2>
-  <img src="WhatsApp Image 2026-09-11 at 7.15.10 PM.jpeg">
- 
-  <button onclick="goNext()">Next →</button>
+  <div class="gallery">
+    <img src="WhatsApp Image 2026-09-11 at 7.15.10 PM.jpeg">
+    <button class="next-btn" onclick="goNext(event)">Next →</button>
+    
+  </div>
 </div>
 
 <!-- SCREEN 4 -->
 <div class="screen" id="screen4">
-  <button onclick="unlockSecret()">Unlock Secret 💌</button>
-  <p id="secretText"></p>
-  <button onclick="goNext()">Next →</button>
+  <h1 class="fade">I didn’t just fall for you...</h1>
+  <p class="fade delay">I found my world in you 💖</p>
+  <button class="next-btn" onclick="goNext(event)">Next →</button>
 </div>
 
-<!-- SCREEN 5 (SHOCK) -->
+<!-- SCREEN 5 -->
 <div class="screen" id="screen5">
-  <h1 class="big">Wait...</h1>
+  <h1 class="heartbeat">❤️</h1>
+  <p>Every beat of my heart says your name</p>
+  <button class="next-btn" onclick="goNext(event)">Next →</button>
 </div>
 
-<!-- SCREEN 6 (PROPOSAL) -->
+<!-- SCREEN 6 -->
 <div class="screen" id="screen6">
-  <h1>Will you stay with me forever? 💍</h1>
-  <button class="yes" onclick="yesClicked()">YES ❤️</button>
+  <button onclick="unlockSecret(event)">Unlock Secret 💌</button>
+  <p id="secretText"></p>
+</div>
+
+<!-- SCREEN 7 -->
+<div class="screen" id="screen7">
+  <h1 class="glow">Every moment with you…</h1>
+  <p>is my favorite memory 💫</p>
+  <button class="next-btn" onclick="goNext(event)">Next →</button>
+</div>
+
+<div class="screen" id="screenX">
+  <h1>Wait…</h1>
+</div>
+
+<!-- SCREEN 8 -->
+<div class="screen" id="screen8">
+ <h1 class="glow"> 
+  <span id="nameText"></span>… will you be mine forever? 💍
+</h1>
+  <button class="yes" onclick="yesClicked(event)">YES ❤️</button>
   <button class="no" onmouseover="moveNo()">NO 😜</button>
 </div>
 
-<!-- SCREEN 7 (FINAL) -->
-<div class="screen" id="screen7">
-  <h1 class="final">
-    I don’t need the world…<br>
-    I just need you ❤️
-  </h1>
+<!-- SCREEN 9 -->
+<div class="screen" id="screen9">
+  <h1 class="glow">I LOVE YOU ❤️</h1>
+  <p>Forever starts with you 💫</p>
 </div>
+
+<audio id="music" src="vidssave.com Ennamo yedho song lyrics 48KBPS.mp3"></audio>
+
+
 
 <script src="script.js"></script>
 </body>
